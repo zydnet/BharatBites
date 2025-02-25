@@ -1,33 +1,25 @@
-//
-//  content2.swift
-//  testb
-//
-//  Created by user on 21/02/25.
-//
-
 import SwiftUI
 
 struct Content: View {
-    @State private var searchText = "" // State variable for search bar
+    @State private var searchText = ""
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                // Search Bar
+            VStack(spacing: 30) {
                 HStack {
-                    TextField("Search for food...", text: $searchText)
+                    TextField("Search for food or nutrients...", text: $searchText)
                         .padding(10)
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
                         .padding(.horizontal, 16)
+                        .tint(.black)
                 }
                 .padding(.top, 10)
                 
-                // Scrollable Cards
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(filteredFoodItems) { food in
-                            NavigationLink(destination: FoodDetailView(food: food)) { // Navigate to FoodDetailView
+                            NavigationLink(destination: FoodDetailView(food: food)) {
                                 FoodCard(food: food)
                             }
                         }
@@ -35,17 +27,17 @@ struct Content: View {
                     .padding(.horizontal, 16)
                 }
             }
-            .navigationTitle("Explore Foods")
-            .background(Color.background.ignoresSafeArea())
+            .navigationTitle("")
+            .navigationBarHidden(true)
+            .background(Color.HomeBackground.ignoresSafeArea())
         }
     }
     
-    // Filtered Food Items Based on Search Text
     private var filteredFoodItems: [FoodItem] {
         if searchText.isEmpty {
             return foodItems
         } else {
-            return foodItems.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+            return foodItems.filter { $0.searchTerms.contains(searchText.lowercased()) }
         }
     }
 }
@@ -67,9 +59,10 @@ struct FoodCard: View {
                     .font(.headline)
                     .foregroundColor(.primary)
                 
-                Text(food.description)
+                Text(food.richIn)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .multilineTextAlignment(.leading)
             }
             
             Spacer()
